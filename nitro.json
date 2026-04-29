@@ -1,0 +1,23 @@
+{
+  "cxxNamespace": ["facebiometrics"],
+  "ios": {
+    "iosModuleName": "FaceBiometrics"
+  },
+  "android": {
+    "androidNamespace": ["facebiometrics"],
+    "androidCxxLibName": "facebiometrics"
+  },
+  "autolinking": {
+    "FaceBiometrics": {
+      "ios": {
+        "language": "swift",
+        "implementationClassName": "FaceBiometrics"
+      },
+      "android": {
+        "language": "kotlin",
+        "implementationClassName": "FaceBiometrics"
+      }
+    }
+  },
+  "ignorePaths": ["node_modules"]
+}
