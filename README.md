@@ -9,6 +9,7 @@ This package is under active planning and development. The checklist below is th
 - [x] `TASK-000`: architecture boundaries are defined in the project plan.
 - [x] `TASK-001`: public TypeScript API, result types, hooks, validation helpers, and compact embedding comparison are exported.
 - [x] `TASK-002`: `FaceBiometricsCamera` renders a VisionCamera front preview, validates props, handles permission/front-camera states, dispatches summarized native events, and owns session lifecycle commands.
+- [x] `TASK-003`: `useFaceEnrollment` exposes UI state, pose progress, quality, result, error, reset/cancel helpers, and ready-to-spread camera props.
 - [ ] Native Android and iOS frame analysis, face detection, quality scoring, embedding inference, and native recognition comparison are still roadmap work.
 
 ## Roadmap
@@ -169,30 +170,30 @@ This package is under active planning and development. The checklist below is th
 
 ### Guided Poses And Movement
 
-- [ ] Support `center`.
-- [ ] Support `left`.
-- [ ] Support `right`.
-- [ ] Support `up`.
-- [ ] Support `down`.
+- [x] Support `center`.
+- [x] Support `left`.
+- [x] Support `right`.
+- [x] Support `up`.
+- [x] Support `down`.
 - [ ] Implement native guided pose validation.
 - [ ] Require stable pose before capture.
-- [ ] Track captured poses.
-- [ ] Emit pose progress events.
+- [x] Track captured poses.
+- [x] Emit pose progress events.
 - [ ] Use guided movement as liveness-style validation for recognition.
 - [ ] Document that guided movement is not certified liveness or presentation-attack detection.
 
 ### Enrollment
 
-- [ ] Support face registration/enrollment mode.
+- [x] Support face registration/enrollment mode.
 - [ ] Capture multiple valid frames across required guided poses.
 - [ ] Select the best frame metadata per pose.
 - [ ] Generate a final native embedding.
 - [ ] Return a 128-dimensional normalized number array.
-- [ ] Return quality report.
-- [ ] Return captured poses.
-- [ ] Return selected best-frame metadata.
-- [ ] Avoid automatic biometric storage.
-- [ ] Leave storage fully caller-controlled.
+- [x] Return quality report.
+- [x] Return captured poses.
+- [x] Return selected best-frame metadata.
+- [x] Avoid automatic biometric storage.
+- [x] Leave storage fully caller-controlled.
 
 ### Recognition
 
@@ -416,6 +417,14 @@ import {
   onRecognitionComplete={(result) => {}}
   onError={(error) => {}}
 />
+```
+
+```tsx
+const enrollment = useFaceEnrollment({
+  requiredPoses: ['center', 'left', 'right'],
+});
+
+<FaceBiometricsCamera {...enrollment.cameraProps} />;
 ```
 
 ## Non-Goals

@@ -175,6 +175,8 @@ export type FaceSessionStatus =
 export interface FaceEnrollmentHookState {
   state: FaceSessionStatus;
   progress: FaceBiometricsProgressEvent | null;
+  poseProgress: Readonly<Record<FacePose, boolean>>;
+  capturedPoses: readonly FacePose[];
   quality: FaceQualityReport | null;
   currentPose: FacePose | null;
   result: FaceEnrollmentResult | null;
@@ -184,11 +186,23 @@ export interface FaceEnrollmentHookState {
 export interface FaceRecognitionHookState {
   state: FaceSessionStatus;
   progress: FaceBiometricsProgressEvent | null;
+  poseProgress: Readonly<Record<FacePose, boolean>>;
+  capturedPoses: readonly FacePose[];
   quality: FaceQualityReport | null;
   currentPose: FacePose | null;
   result: FaceRecognitionResult | null;
   error: FaceBiometricsError | null;
 }
+
+export type FaceEnrollmentHookOptions = Omit<
+  FaceEnrollmentCameraProps,
+  | 'mode'
+  | 'onProgress'
+  | 'onQualityChanged'
+  | 'onPoseChanged'
+  | 'onEnrollmentComplete'
+  | 'onError'
+>;
 
 export interface FaceEnrollmentHook extends FaceEnrollmentHookState {
   callbacks: Pick<
@@ -199,6 +213,16 @@ export interface FaceEnrollmentHook extends FaceEnrollmentHookState {
     | 'onEnrollmentComplete'
     | 'onError'
   >;
+  cameraProps: FaceEnrollmentHookOptions &
+    Pick<
+      FaceEnrollmentCameraProps,
+      | 'mode'
+      | 'onProgress'
+      | 'onQualityChanged'
+      | 'onPoseChanged'
+      | 'onEnrollmentComplete'
+      | 'onError'
+    >;
   reset: () => void;
   cancel: () => void;
 }

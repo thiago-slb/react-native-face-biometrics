@@ -1,73 +1,104 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
+import {
+  createInitialFaceSessionState,
+  faceSessionReducer,
+} from '../internal/sessionState';
 import type {
   FaceBiometricsError,
   FaceBiometricsProgressEvent,
+  FaceEnrollmentHookOptions,
   FaceEnrollmentHook,
   FaceEnrollmentResult,
   FacePose,
   FaceQualityReport,
-  FaceSessionStatus,
 } from '../types';
 
-export function useFaceEnrollment(): FaceEnrollmentHook {
-  const [state, setState] = useState<FaceSessionStatus>('idle');
-  const [progress, setProgress] = useState<FaceBiometricsProgressEvent | null>(
-    null
+export function useFaceEnrollment(
+  options: FaceEnrollmentHookOptions = {}
+): FaceEnrollmentHook {
+  const mountedRef = useRef(true);
+  const [session, dispatch] = useReducer(
+    faceSessionReducer<FaceEnrollmentResult>,
+    undefined,
+    createInitialFaceSessionState<FaceEnrollmentResult>
   );
-  const [quality, setQuality] = useState<FaceQualityReport | null>(null);
-  const [currentPose, setCurrentPose] = useState<FacePose | null>(null);
-  const [result, setResult] = useState<FaceEnrollmentResult | null>(null);
-  const [error, setError] = useState<FaceBiometricsError | null>(null);
 
-  const reset = useCallback(() => {
-    setState('idle');
-    setProgress(null);
-    setQuality(null);
-    setCurrentPose(null);
-    setResult(null);
-    setError(null);
+  useEffect(() => {
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
-  const cancel = useCallback(() => {
-    setState('cancelled');
-  }, []);
-
-  const callbacks = useMemo(
-    () => ({
-      onProgress: (event: FaceBiometricsProgressEvent) => {
-        setState('active');
-        setProgress(event);
-        setCurrentPose(event.currentPose ?? null);
-      },
-      onQualityChanged: (nextQuality: FaceQualityReport) => {
-        setQuality(nextQuality);
-      },
-      onPoseChanged: (pose: FacePose, event: FaceBiometricsProgressEvent) => {
-        setCurrentPose(pose);
-        setProgress(event);
-      },
-      onEnrollmentComplete: (nextResult: FaceEnrollmentResult) => {
-        setState('completed');
-        setResult(nextResult);
-        setQuality(nextResult.quality);
-      },
-      onError: (nextError: FaceBiometricsError) => {
-        setState('failed');
-        setError(nextError);
-      },
-    }),
+  const dispatchIfMounted = useCallback(
+    (action: Parameters<typeof dispatch>[0]) => {
+      if (mountedRef.current) {
+        dispatch(action);
+      }
+    },
     []
   );
 
+  const reset = useCallback(() => {
+    dispatchIfMounted({ type: 'reset' });
+  }, [dispatchIfMounted]);
+
+  const cancel = useCallback(() => {
+    dispatchIfMounted({ type: 'cancel' });
+  }, [dispatchIfMounted]);
+
+  const callbacks = useMemo(
+    () => ({
+      onRequestPermission: () => {
+        dispatchIfMounted({ type: 'requestPermission' });
+      },
+      onProgress: (event: FaceBiometricsProgressEvent) => {
+        dispatchIfMounted({ type: 'progress', payload: event });
+      },
+      onQualityChanged: (nextQuality: FaceQualityReport) => {
+        dispatchIfMounted({
+          type: 'qualityChanged',
+          payload: nextQuality,
+        });
+      },
+      onPoseChanged: (pose: FacePose, event: FaceBiometricsProgressEvent) => {
+        dispatchIfMounted({
+          type: 'poseChanged',
+          pose,
+          progress: event,
+        });
+      },
+      onEnrollmentComplete: (nextResult: FaceEnrollmentResult) => {
+        dispatchIfMounted({
+          type: 'complete',
+          payload: nextResult,
+          quality: nextResult.quality,
+        });
+      },
+      onError: (nextError: FaceBiometricsError) => {
+        dispatchIfMounted({ type: 'error', payload: nextError });
+      },
+    }),
+    [dispatchIfMounted]
+  );
+
+  const cameraProps = useMemo(
+    () => ({
+      ...options,
+      mode: 'enroll' as const,
+      onProgress: callbacks.onProgress,
+      onQualityChanged: callbacks.onQualityChanged,
+      onPoseChanged: callbacks.onPoseChanged,
+      onEnrollmentComplete: callbacks.onEnrollmentComplete,
+      onError: callbacks.onError,
+    }),
+    [callbacks, options]
+  );
+
   return {
-    state,
-    progress,
-    quality,
-    currentPose,
-    result,
-    error,
+    ...session,
     callbacks,
+    cameraProps,
     reset,
     cancel,
   };

@@ -30,6 +30,7 @@ export type {
   FaceEmbedding,
   FaceEnrollmentCameraProps,
   FaceEnrollmentHook,
+  FaceEnrollmentHookOptions,
   FaceEnrollmentHookState,
   FaceEnrollmentResult,
   FaceModelMetadata,
