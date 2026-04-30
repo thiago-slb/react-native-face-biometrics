@@ -4,67 +4,74 @@ Production-grade React Native face biometrics plugin planned around `react-nativ
 
 This package is under active planning and development. The checklist below is the implementation roadmap and should be updated as each item lands.
 
+## Current Status
+
+- [x] `TASK-000`: architecture boundaries are defined in the project plan.
+- [x] `TASK-001`: public TypeScript API, result types, hooks, validation helpers, and compact embedding comparison are exported.
+- [x] `TASK-002`: `FaceBiometricsCamera` renders a VisionCamera front preview, validates props, handles permission/front-camera states, dispatches summarized native events, and owns session lifecycle commands.
+- [ ] Native Android and iOS frame analysis, face detection, quality scoring, embedding inference, and native recognition comparison are still roadmap work.
+
 ## Roadmap
 
 ### Core Architecture
 
-- [ ] Define clean architecture boundaries for JS API, React component, hooks, native bridge, frame processor, face detection, quality analysis, ML inference, comparison, example app, tests, docs, and release tooling.
-- [ ] Keep the JavaScript layer small and focused on types, props, callbacks, hooks, and state orchestration.
-- [ ] Keep all frame analysis in native Android and iOS code.
-- [ ] Prevent raw frames, images, bitmaps, pixel buffers, face crops, or temporary image paths from crossing the JS bridge.
-- [ ] Emit only small serializable events and final result payloads to JavaScript.
-- [ ] Define module boundaries for Android Kotlin and iOS Swift implementations.
+- [x] Define clean architecture boundaries for JS API, React component, hooks, native bridge, frame processor, face detection, quality analysis, ML inference, comparison, example app, tests, docs, and release tooling.
+- [x] Keep the JavaScript layer small and focused on types, props, callbacks, hooks, and state orchestration.
+- [x] Keep all frame analysis in native Android and iOS code.
+- [x] Prevent raw frames, images, bitmaps, pixel buffers, face crops, or temporary image paths from crossing the JS bridge.
+- [x] Emit only small serializable events and final result payloads to JavaScript.
+- [x] Define module boundaries for Android Kotlin and iOS Swift implementations.
 
 ### Public API
 
-- [ ] Export `FaceBiometricsCamera`.
-- [ ] Export `useFaceEnrollment`.
-- [ ] Export `useFaceRecognition`.
-- [ ] Export `compareFaceEmbeddings`.
-- [ ] Define `FaceEmbedding`.
-- [ ] Define `FacePose`.
-- [ ] Define `FaceQualityReport`.
-- [ ] Define `FaceEnrollmentResult`.
-- [ ] Define `FaceRecognitionResult`.
-- [ ] Define `FaceBiometricsCameraProps`.
-- [ ] Support `mode: "enroll" | "recognize"`.
-- [ ] Support `knownEmbedding?: number[]`.
-- [ ] Support `requiredPoses?: FacePose[]`.
-- [ ] Support `minBrightness?: number`.
-- [ ] Support `minSharpness?: number`.
-- [ ] Support `maxBlur?: number`.
-- [ ] Support `stabilityMs?: number`.
-- [ ] Support `threshold?: number`.
-- [ ] Support `onProgress`.
-- [ ] Support `onQualityChanged`.
-- [ ] Support `onPoseChanged`.
-- [ ] Support `onEnrollmentComplete`.
-- [ ] Support `onRecognitionComplete`.
-- [ ] Support `onError`.
-- [ ] Add strict runtime validation for 128-dimensional finite embeddings.
+- [x] Export `FaceBiometricsCamera`.
+- [x] Export `useFaceEnrollment`.
+- [x] Export `useFaceRecognition`.
+- [x] Export `compareFaceEmbeddings`.
+- [x] Define `FaceEmbedding`.
+- [x] Define `FacePose`.
+- [x] Define `FaceQualityReport`.
+- [x] Define `FaceEnrollmentResult`.
+- [x] Define `FaceRecognitionResult`.
+- [x] Define `FaceBiometricsCameraProps`.
+- [x] Support `mode: "enroll" | "recognize"`.
+- [x] Support `knownEmbedding?: number[]`.
+- [x] Support `requiredPoses?: FacePose[]`.
+- [x] Support `minBrightness?: number`.
+- [x] Support `minSharpness?: number`.
+- [x] Support `maxBlur?: number`.
+- [x] Support `stabilityMs?: number`.
+- [x] Support `threshold?: number`.
+- [x] Support `onProgress`.
+- [x] Support `onQualityChanged`.
+- [x] Support `onPoseChanged`.
+- [x] Support `onEnrollmentComplete`.
+- [x] Support `onRecognitionComplete`.
+- [x] Support `onError`.
+- [x] Add strict runtime validation for 128-dimensional finite embeddings.
 - [ ] Add TypeScript type tests for the public API.
 
 ### Camera Component
 
-- [ ] Build a reusable `FaceBiometricsCamera` component.
-- [ ] Use `react-native-vision-camera` internally.
-- [ ] Render a front-facing camera preview.
-- [ ] Handle camera permission states.
+- [x] Build a reusable `FaceBiometricsCamera` component.
+- [x] Use `react-native-vision-camera` internally.
+- [x] Render a front-facing camera preview.
+- [x] Handle camera permission states.
 - [ ] Handle loading, denied, blocked, restricted, and unavailable permission states.
-- [ ] Validate front camera availability before starting a session.
-- [ ] Handle camera lifecycle on mount and unmount.
-- [ ] Pause native frame processing when the app backgrounds.
-- [ ] Resume or restart safely when the app foregrounds.
+- [x] Validate front camera availability before starting a session.
+- [x] Handle camera lifecycle on mount and unmount.
+- [x] Pause native frame processing when the app backgrounds.
+- [x] Resume or restart safely when the app foregrounds.
 - [ ] Handle camera interruptions such as app switching, phone calls, OS camera revocation, and permission changes.
 - [ ] Normalize device orientation and front-camera mirroring.
 - [ ] Support Expo dev builds.
-- [ ] Document that Expo Go is not supported.
+- [x] Document that Expo Go is not supported.
 
 ### Native Bridge And Contracts
 
-- [ ] Define versioned JS-to-native command contracts.
-- [ ] Define versioned native-to-JS event contracts.
-- [ ] Define stable event schemas for progress, quality changes, pose changes, completion, warnings, and errors.
+- [x] Define versioned JS-to-native command contracts.
+- [x] Define versioned native-to-JS event contracts.
+- [x] Define stable event schemas for progress, quality changes, pose changes, completion, warnings, and errors.
 - [ ] Define stable error codes.
 - [ ] Define stable warning codes.
 - [ ] Add `embeddingSchemaVersion`.
@@ -372,6 +379,8 @@ This package is under active planning and development. The checklist below is th
 - [ ] Add changelog process.
 
 ## Planned API Shape
+
+Install `react-native-vision-camera` in the host app. Expo Go is not supported because native camera/frame-processing dependencies require a React Native CLI app or Expo dev build.
 
 ```tsx
 import {
