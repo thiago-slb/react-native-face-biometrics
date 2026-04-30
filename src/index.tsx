@@ -4,6 +4,11 @@ export { useFaceRecognition } from './hooks/useFaceRecognition';
 export { compareFaceEmbeddings } from './utils/compareFaceEmbeddings';
 export { multiply } from './multiply';
 export {
+  buildSessionConfig,
+  NativeFaceBiometricsModule,
+} from './native/NativeFaceBiometricsModule';
+export { subscribeToFaceBiometricsEvents } from './native/NativeFaceBiometricsEvents';
+export {
   assertFaceEmbedding,
   createInvalidEmbeddingError,
   isFaceEmbedding,
@@ -36,6 +41,11 @@ export type {
   FaceRecognitionResult,
   FaceSessionStatus,
 } from './types';
+export type { FaceBiometricsSessionConfig } from './native/NativeFaceBiometricsModule';
+export type {
+  NativeFaceBiometricsEvent,
+  NativeFaceBiometricsEventListener,
+} from './native/NativeFaceBiometricsEvents';
 export {
   DEFAULT_FACE_RECOGNITION_THRESHOLD,
   FACE_EMBEDDING_DIMENSIONS,

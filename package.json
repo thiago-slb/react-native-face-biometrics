@@ -93,7 +93,8 @@
   "peerDependencies": {
     "react": "*",
     "react-native": "*",
-    "react-native-nitro-modules": "^0.35.3"
+    "react-native-nitro-modules": "^0.35.3",
+    "react-native-vision-camera": ">=4"
   },
   "workspaces": [
     "example"
